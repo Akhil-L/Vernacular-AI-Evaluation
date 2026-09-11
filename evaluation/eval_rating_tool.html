@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vernacular Poster Eval</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAF6EE; --ink:#20263A; --marigold:#E29A3C; --teal:#2F6E68;
+    --line:#E4DCC8; --card:#FFFFFF;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--paper); color:var(--ink); font-family:'Inter',sans-serif; min-height:100vh;}
+  .wrap{max-width:640px; margin:0 auto; padding:32px 20px 60px;}
+  h1,h2{font-family:'Zilla Slab',serif; font-weight:600; margin:0 0 8px;}
+  h1{font-size:26px;} h2{font-size:20px;}
+  p{line-height:1.55; font-size:15px;}
+  .top-nav{display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;}
+  .brand{font-family:'Zilla Slab',serif; font-weight:700; font-size:17px;}
+  .admin-link{font-size:12px; color:#8A8370; cursor:pointer; text-decoration:underline; background:none; border:none;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:24px; margin-bottom:16px;}
+  label{display:block; font-size:13px; font-weight:600; margin:14px 0 5px;}
+  input[type=text],input[type=email],input[type=number]{
+    width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:6px;
+    font-size:14px; font-family:'Inter',sans-serif; background:#fff;
+  }
+  .check-row{display:flex; align-items:flex-start; gap:8px; font-size:14px; margin-top:6px; font-weight:400;}
+  .check-row input{margin-top:3px;}
+  .lang-opts{display:flex; gap:16px; margin-top:6px;}
+  .lang-opts label{display:flex; align-items:center; gap:6px; font-weight:500; margin:0;}
+  button.primary{
+    background:var(--teal); color:#fff; border:none; padding:12px 22px; border-radius:6px;
+    font-size:14px; font-weight:600; cursor:pointer; margin-top:18px; font-family:'Inter',sans-serif;
+  }
+  button.primary:disabled{background:#B9C9C6; cursor:not-allowed;}
+  .criteria{background:#FBF3E4; border:1px solid var(--line); border-radius:8px; padding:12px 14px; font-size:13px; margin-bottom:16px; line-height:1.5;}
+  .pair{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px;}
+  .slot{border:1px solid var(--line); border-radius:8px; overflow:hidden; background:#fff;}
+  .slot img{width:100%; display:block;}
+  .placeholder{height:220px; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#F1E4C6,#E8D6B0); color:#8A7A4E; font-size:12px; padding:16px; text-align:center;}
+  .slot-label{padding:8px 10px; font-size:12px; color:#8A8370; font-weight:600; text-align:center; border-top:1px solid var(--line);}
+  .choice-row{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;}
+  .choice-row button{padding:12px; border-radius:6px; border:1px solid var(--teal); background:#fff; color:var(--teal); font-weight:600; font-size:14px; cursor:pointer;}
+  .choice-row button:hover{background:var(--teal); color:#fff;}
+  .neutral-row{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .neutral-row button{padding:10px; border-radius:6px; border:1px solid var(--line); background:#fff; color:var(--ink); font-size:13px; cursor:pointer;}
+  .neutral-row button:hover{border-color:var(--marigold);}
+  .progress{font-size:12px; color:#8A8370; margin-bottom:10px; font-weight:600;}
+  table{width:100%; border-collapse:collapse; font-size:13px; margin-top:10px;}
+  th,td{text-align:left; padding:8px 10px; border-bottom:1px solid var(--line);}
+  th{font-weight:600; color:#8A8370; font-size:11px; text-transform:uppercase;}
+  .thanks{text-align:center; padding:40px 0;}
+  .dropzone{border:2px dashed var(--line); border-radius:10px; padding:30px; text-align:center; color:#8A8370; font-size:13px; cursor:pointer; margin-bottom:16px;}
+  .dropzone.drag{border-color:var(--teal); color:var(--teal); background:#F3F8F7;}
+  .filelist{font-size:12px; color:#8A8370; margin-bottom:10px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top-nav">
+    <div class="brand">Vernacular Poster Eval</div>
+    <button class="admin-link" onclick="showResults()">Results (admin)</button>
+  </div>
+  <div id="app"></div>
+</div>
+
+<script>
+// =================================================================
+// IMAGES — auto-filled by build_standalone_html.py. Do not edit by hand.
+// =================================================================
+const IMAGES = {
+  "festival_poster_hi_chatgpt": "Images/ChatGPT Image 2.5 prompt1 Hindi.png",
+  "festival_poster_hi_gemini": "Images/Gemini 3.6 flash prompt1 Hindi.png",
+  "festival_poster_hi_claude": "Images/Claude sonet5 prompt1 Hindi.png",
+
+  "festival_poster_te_chatgpt": "Images/ChatGPT Image 2.5 prompt1 Telugu.png",
+  "festival_poster_te_gemini": "Images/Gemini 3.6 flash prompt1 Telugu.png",
+  "festival_poster_te_claude": "Images/Claude sonet5 prompt1 Telugu.png",
+
+  "shop_signage_hi_chatgpt": "Images/ChatGPT Image 2.5 prompt2 Hindi.png",
+  "shop_signage_hi_gemini": "Images/Gemini 3.6 flash prompt2 Hindi.png",
+  "shop_signage_hi_claude": "Images/Claude sonet5 prompt2 Hindi.png",
+
+  "shop_signage_te_chatgpt": "Images/ChatGPT Image 2.5 prompt2 Telugu.png",
+  "shop_signage_te_gemini": "Images/Gemini 3.6 flash prompt2 Telugu.png",
+  "shop_signage_te_claude": "Images/Claude sonet5 prompt2 Telugu.png",
+
+  "product_card_hi_chatgpt": "Images/ChatGPT Image 2.5 prompt3 Hindi.png",
+  "product_card_hi_gemini": "Images/Gemini 3.6 flash prompt3 Hindi.png",
+  "product_card_hi_claude": "Images/Claude sonet5 prompt3 Hindi.png",
+
+  "product_card_te_chatgpt": "Images/ChatGPT Image 2.5 prompt3 Telugu.png",
+  "product_card_te_gemini": "Images/Gemini 3.6 flash prompt3 Telugu.png",
+  "product_card_te_claude": "Images/Claude sonet5 prompt3 Telugu.png"
+};
+
+// ---------------------------------------------------------------
+// CONFIG
+// ---------------------------------------------------------------
+// Paste your Google Apps Script Web App URL here after it is created.
+// Example: https://script.google.com/macros/s/XXXXXXXX/exec
+const SUBMISSION_URL = "https://script.google.com/macros/s/AKfycbwEk2Qn5XSwazmRS9_TxnY4NpExr2TJv47Mx2j435YHsx4_Ua6FoZJXL6JGbmM8A3zrcg/exec";
+
+const MODELS = {
+  chatgpt: "ChatGPT Images 2.5",
+  gemini: "Gemini 3.6 Flash",
+  claude: "Claude Sonnet 5"
+};
+const MODEL_KEYS = Object.keys(MODELS);
+
+const SCENARIOS = {
+  festival_poster: "Festival sale poster",
+  shop_signage: "Shop signage",
+  product_card: "Product listing card"
+};
+const LANGS = { hi: "Hindi", te: "Telugu" };
+
+function imgKey(scenario, lang, model){ return `${scenario}_${lang}_${model}`; }
+
+function buildComparisons(){
+  const pairs = [];
+  for(const scenario of Object.keys(SCENARIOS)){
+    for(const lang of Object.keys(LANGS)){
+      for(let i=0;i<MODEL_KEYS.length;i++){
+        for(let j=i+1;j<MODEL_KEYS.length;j++){
+          pairs.push({
+            id: `${scenario}_${lang}_${MODEL_KEYS[i]}_vs_${MODEL_KEYS[j]}`,
+            scenario, lang, modelA: MODEL_KEYS[i], modelB: MODEL_KEYS[j]
+          });
+        }
+      }
+    }
+  }
+  return pairs;
+}
+const ALL_COMPARISONS = buildComparisons();
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+
+// ---------------------------------------------------------------
+// STATE
+// ---------------------------------------------------------------
+let state = { screen: "consent", participant: {}, trials: [], trialIndex: 0, votes: [] };
+function uid(){ return 'p_' + Math.random().toString(36).slice(2,10); }
+
+const app = document.getElementById('app');
+function render(){
+  if(state.screen === 'consent') return renderConsent();
+  if(state.screen === 'trial') return renderTrial();
+  if(state.screen === 'submitting') return renderSubmitting();
+  if(state.screen === 'thanks') return renderThanks();
+  if(state.screen === 'results') return renderResults();
+}
+
+function renderConsent(){
+  app.innerHTML = `
+    <div class="card">
+      <h1>Before we start</h1>
+      <p>This is a short evaluation of AI-generated promotional posters for small Indian
+      businesses, in Hindi and Telugu. You'll see pairs of images and pick which one you
+      prefer — takes about 10-15 minutes.</p>
+      <label>Name</label><input type="text" id="f-name" />
+      <label>Email</label><input type="email" id="f-email" />
+      <label>Age</label><input type="number" id="f-age" min="1" />
+      <label>Which of these can you read comfortably?</label>
+      <div class="lang-opts">
+        <label><input type="checkbox" value="hi" class="lang-check" /> Hindi</label>
+        <label><input type="checkbox" value="te" class="lang-check" /> Telugu</label>
+      </div>
+      <div class="check-row" style="margin-top:18px;">
+        <input type="checkbox" id="f-consent" />
+        <span>I confirm that I am 18 years or older. I voluntarily participated in this
+        evaluation. I consent to my name, email, and responses/ratings being included in
+        this assignment submission for hiring evaluation purposes.</span>
+      </div>
+      <button class="primary" id="start-btn">Start evaluation</button>
+    </div>`;
+  document.getElementById('start-btn').onclick = () => {
+    const name = document.getElementById('f-name').value.trim();
+    const email = document.getElementById('f-email').value.trim();
+    const age = document.getElementById('f-age').value;
+    const consent = document.getElementById('f-consent').checked;
+    const langs = Array.from(document.querySelectorAll('.lang-check:checked')).map(c=>c.value);
+    if(!name || !email || !age || Number(age) < 18 || !consent || langs.length===0){
+      alert('Please fill all fields, confirm you are 18+, select at least one language, and consent to participate.');
+      return;
+    }
+    state.participant = { id: uid(), name, email, age, langs, consent, startedAt: new Date().toISOString() };
+    state.trials = shuffle(ALL_COMPARISONS.filter(c => langs.includes(c.lang)));
+    state.trialIndex = 0;
+    state.screen = 'trial';
+    render();
+  };
+}
+
+function renderTrial(){
+  const trial = state.trials[state.trialIndex];
+  const flip = Math.random() < 0.5;
+  const leftModel = flip ? trial.modelB : trial.modelA;
+  const rightModel = flip ? trial.modelA : trial.modelB;
+  const leftImg = IMAGES[imgKey(trial.scenario, trial.lang, leftModel)];
+  const rightImg = IMAGES[imgKey(trial.scenario, trial.lang, rightModel)];
+  const progress = `<div class="progress">Comparison ${state.trialIndex+1} of ${state.trials.length}</div>`;
+  const practiceTag = '';
+
+  app.innerHTML = `
+    <div class="card">
+      ${progress}
+      <h2>${SCENARIOS[trial.scenario]} — ${LANGS[trial.lang]}</h2>
+      <div class="criteria"><b>What to judge:</b> Script/text accuracy &middot; Business usability
+      (would a real shop use this as-is?) &middot; Visual/cultural fit.</div>
+      <div class="pair">
+        <div class="slot">${leftImg ? `<img src="${leftImg}"/>` : `<div class="placeholder">[missing image]<br/>${imgKey(trial.scenario,trial.lang,leftModel)}</div>`}<div class="slot-label">Left</div></div>
+        <div class="slot">${rightImg ? `<img src="${rightImg}"/>` : `<div class="placeholder">[missing image]<br/>${imgKey(trial.scenario,trial.lang,rightModel)}</div>`}<div class="slot-label">Right</div></div>
+      </div>
+      <div class="choice-row"><button id="pick-left">Prefer Left</button><button id="pick-right">Prefer Right</button></div>
+      <div class="neutral-row"><button id="pick-both">Both good</button><button id="pick-neither">Neither</button></div>
+    </div>`;
+
+  const recordVote = (choice) => {
+    state.votes.push({
+      comparisonId: trial.scenario+'_'+trial.lang+'_'+trial.modelA+'_vs_'+trial.modelB,
+      scenario: trial.scenario, lang: trial.lang, leftModel, rightModel, choice,
+      timestamp: new Date().toISOString()
+    });
+    advance();
+  };
+  document.getElementById('pick-left').onclick = () => recordVote('left');
+  document.getElementById('pick-right').onclick = () => recordVote('right');
+  document.getElementById('pick-both').onclick = () => recordVote('both_good');
+  document.getElementById('pick-neither').onclick = () => recordVote('neither');
+}
+
+function advance(){
+  state.trialIndex++;
+  if(state.trialIndex >= state.trials.length){
+    state.screen = 'submitting';
+    render();
+    submitResponsesToSheet().then(() => {
+      state.screen = 'thanks';
+      render();
+    }).catch((err) => {
+      console.error(err);
+      app.innerHTML = `<div class="card thanks"><h1>Submission problem</h1><p>Your response could not be submitted. Please try again.</p><button class="primary" onclick="location.reload()">Try again</button></div>`;
+    });
+  } else {
+    render();
+  }
+}
+
+// ---------------------------------------------------------------
+// RESPONSE SUBMISSION
+// Responses are sent to the private Google Sheet through a Google
+// Apps Script Web App. Participants do not download any response file.
+// ---------------------------------------------------------------
+function submitResponsesToSheet(){
+  return new Promise((resolve, reject) => {
+    if(!SUBMISSION_URL || SUBMISSION_URL.includes("PASTE_YOUR_")){
+      reject(new Error("Response destination is not configured yet."));
+      return;
+    }
+
+    const payload = {
+      participant: state.participant,
+      votes: state.votes,
+      finishedAt: new Date().toISOString()
+    };
+
+    const iframeName = "submissionFrame_" + Date.now();
+    const iframe = document.createElement("iframe");
+    iframe.name = iframeName;
+    iframe.style.display = "none";
+    document.body.appendChild(iframe);
+
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = SUBMISSION_URL;
+    form.target = iframeName;
+    form.style.display = "none";
+
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = "payload";
+    input.value = JSON.stringify(payload);
+
+    form.appendChild(input);
+    document.body.appendChild(form);
+
+    // Cross-origin form POST cannot reliably expose the response to the page,
+    // so we treat successful form submission initiation as the submission step.
+    form.submit();
+
+    setTimeout(() => {
+      form.remove();
+      iframe.remove();
+      resolve();
+    }, 1200);
+  });
+}
+
+function renderSubmitting(){
+  app.innerHTML = `
+    <div class="card thanks">
+      <h1>Submitting…</h1>
+      <p>Please wait a moment while your response is recorded.</p>
+    </div>`;
+}
+
+function renderThanks(){
+  app.innerHTML = `
+    <div class="card thanks">
+      <h1>Thank you!</h1>
+      <p>Your response has been submitted successfully.</p>
+    </div>`;
+}
+
+// ---------------------------------------------------------------
+// ADMIN RESULTS — drag/drop the downloaded participant JSON files here
+// ---------------------------------------------------------------
+function showResults(){
+  state.screen = 'results';
+  app.innerHTML = `
+    <div class="card">
+      <h1>Results (admin)</h1>
+      <p>Drop all participant <code>responses_*.json</code> files here to compute win rate
+      and Elo, split by language. Nothing is uploaded anywhere — this all runs in your browser.</p>
+      <div class="dropzone" id="dz">Drag & drop JSON files here, or click to choose</div>
+      <input type="file" id="fi" multiple accept=".json" style="display:none" />
+      <div class="filelist" id="fl"></div>
+      <div id="results-out"></div>
+      <button class="primary" onclick="location.reload()">Back</button>
+    </div>`;
+  const dz = document.getElementById('dz');
+  const fi = document.getElementById('fi');
+  dz.onclick = () => fi.click();
+  dz.ondragover = (e) => { e.preventDefault(); dz.classList.add('drag'); };
+  dz.ondragleave = () => dz.classList.remove('drag');
+  dz.ondrop = (e) => { e.preventDefault(); dz.classList.remove('drag'); handleFiles(e.dataTransfer.files); };
+  fi.onchange = (e) => handleFiles(e.target.files);
+}
+
+let loadedParticipants = [];
+function handleFiles(fileList){
+  const files = Array.from(fileList).filter(f => f.name.endsWith('.json'));
+  document.getElementById('fl').textContent = `${files.length} file(s) loaded`;
+  loadedParticipants = [];
+  let remaining = files.length;
+  files.forEach(f => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try{ loadedParticipants.push(JSON.parse(e.target.result)); }catch(err){ console.error('bad json', f.name); }
+      remaining--;
+      if(remaining === 0) computeAndRender();
+    };
+    reader.readAsText(f);
+  });
+}
+
+function computeAndRender(){
+  const votes = [];
+  loadedParticipants.forEach(p => (p.votes||[]).forEach(v => votes.push(v)));
+  let html = `<div class="card"><p>${loadedParticipants.length} participant file(s) · ${votes.length} total comparisons</p></div>`;
+
+  for(const lang of Object.keys(LANGS)){
+    const langVotes = votes.filter(v => v.lang === lang);
+    if(langVotes.length === 0) continue;
+    const decisive = langVotes.filter(v => v.choice === 'left' || v.choice === 'right');
+    const bothGood = langVotes.filter(v => v.choice === 'both_good').length;
+    const neither = langVotes.filter(v => v.choice === 'neither').length;
+
+    const wins = {}, games = {}, elo = {};
+    MODEL_KEYS.forEach(m => { wins[m]=0; games[m]=0; elo[m]=1000; });
+    decisive.sort((a,b) => new Date(a.timestamp) - new Date(b.timestamp));
+    decisive.forEach(v => {
+      const winner = v.choice === 'left' ? v.leftModel : v.rightModel;
+      const loser  = v.choice === 'left' ? v.rightModel : v.leftModel;
+      wins[winner]++; games[winner]++; games[loser]++;
+      const K = 32;
+      const expWinner = 1 / (1 + Math.pow(10, (elo[loser]-elo[winner])/400));
+      const expLoser  = 1 / (1 + Math.pow(10, (elo[winner]-elo[loser])/400));
+      elo[winner] += K * (1 - expWinner);
+      elo[loser]  += K * (0 - expLoser);
+    });
+
+    const rows = MODEL_KEYS.map(m => ({
+      model: MODELS[m], winRate: games[m] ? Math.round(100*wins[m]/games[m]) : null,
+      n: games[m], elo: Math.round(elo[m])
+    })).sort((a,b) => b.elo - a.elo);
+
+    html += `<div class="card"><h2>${LANGS[lang]}</h2><table>
+      <tr><th>Model</th><th>Win rate</th><th>Elo</th><th>N decisive</th></tr>
+      ${rows.map(r => `<tr><td>${r.model}</td><td>${r.winRate===null?'—':r.winRate+'%'}</td><td>${r.elo}</td><td>${r.n}</td></tr>`).join('')}
+      </table>
+      <p style="font-size:13px; color:#8A8370; margin-top:10px;">
+      Both good: ${bothGood} (${langVotes.length?Math.round(100*bothGood/langVotes.length):0}%) ·
+      Neither: ${neither} (${langVotes.length?Math.round(100*neither/langVotes.length):0}%) · excluded from Elo/win-rate above</p>
+      </div>`;
+  }
+  document.getElementById('results-out').innerHTML = html;
+}
+
+render();
+</script>
+</body>
+</html>
