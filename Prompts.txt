@@ -1,0 +1,29 @@
+# Evaluation Prompts
+
+## Scenario 1 — Festival Sale Poster
+
+### Hindi
+A festive Diwali sale promotional poster for a small Indian grocery (kirana) store. Warm, vibrant style with diyas, string lights, marigold motifs. Orange/gold/deep-red palette. Portrait orientation, suitable for print and WhatsApp sharing. Display large, legible text in Hindi script: आनंद किराना स्टोर, दिवाली सेल, and सभी वस्तुओं पर 20% की छूट. Store name at top, offer text prominent in a bold banner at bottom.
+
+### Telugu
+A festive Diwali sale promotional poster for a small Indian grocery (kirana) store. Warm, vibrant style with diyas, string lights, marigold motifs. Orange/gold/deep-red palette. Portrait orientation, suitable for print and WhatsApp sharing. Display large, legible text in Telugu script: ఆనంద్ కిరాణా స్టోర్, దీపావళి సేల్, and అన్ని వస్తువులపై 20% తగ్గింపు. Store name at top, offer text prominent in a bold banner at bottom.
+
+---
+
+## Scenario 2 — Everyday Shop Signboard
+
+### Hindi
+A shop signboard for a small Indian tailoring shop, meant to be mounted outside. Clean professional signage style — bold sans-serif, blue/white or maroon/white, simple border. Landscape orientation. Display large legible text in Hindi script: रवि टेलर्स, सिलाई, अल्टरेशन, ब्लाउज़ का काम, and सुबह 9 बजे से रात 8 बजे तक. Shop name prominent at the top, services clearly visible in the middle, and business hours clearly visible at the bottom.
+
+### Telugu
+A shop signboard for a small Indian tailoring shop, meant to be mounted outside. Clean professional signage style — bold sans-serif, blue/white or maroon/white, simple border. Landscape orientation. Display large legible text in Telugu script: రవి టైలర్స్, కుట్టు పని, ఆల్టరేషన్, జాకెట్ కుట్టడం, and ఉదయం 9 నుండి రాత్రి 8 వరకు. Shop name prominent at the top, services clearly visible in the middle, and business hours clearly visible at the bottom.
+
+---
+
+## Scenario 3 — Product Listing Card
+
+### Hindi
+A square product listing card for a homemade Indian snack brand, styled for a WhatsApp Business/Instagram catalog. Clean appetizing product photography, product centered, soft natural light, minimal background. Overlay text large and legible in Hindi script: घर का बना और ताज़ा, ₹150. Brand wordmark "Anjali's Murukku" stays in Latin script.
+
+### Telugu
+A square product listing card for a homemade Indian snack brand, styled for a WhatsApp Business/Instagram catalog. Clean appetizing product photography, product centered, soft natural light, minimal background. Overlay text large and legible in Telugu script: ఇంట్లో తయారుచేసిన తాజా వంటకం, ₹150. Brand wordmark "Anjali's Murukku" stays in Latin script.
